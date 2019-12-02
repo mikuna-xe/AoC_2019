@@ -1,50 +1,52 @@
-#!/usr/bin/env python
-
-def get_total_fuel(input):
-    fuel = input/3 - 2
-
-    if fuel <= 0:
-        return 0
-    else:
-        return fuel + get_total_fuel(fuel)
+#!/usr/bin/env python3
 
 def main():
-    # Day 2 - Part 1
+    # Day 2
     with open('AoC_input.txt', 'r') as f:
         input_str = f.read()
     input_list = input_str.strip().split(',')
-    opcode = list(map(int, input_list))
-    
-    # restore gravity assist
-    opcode[1] = 12
-    opcode[2] = 2
-    
-    ind = 0
-    
-    cmd_ind = range(len(opcode))[0::4]
-    print(cmd_ind)
+    reset = list(map(int, input_list))
+    opcode = reset.copy()
 
-    for i in cmd_ind:
-        print("index: {}".format(i))
+    # restore noun and verb
+    noun = 1
+    verb = 2
 
-        # addition
-        if opcode[i] == 1:
-            print("add: [{}] + [{}] = [{}]".format(opcode[i+1], opcode[i+2], opcode[i+3]))
-            opcode[opcode[i+3]] = opcode[opcode[i+1]] + opcode[opcode[i+2]]
-            print(">> {} + {}".format(opcode[opcode[i+1]], opcode[opcode[i+2]]))
+    opcode[noun] = 12
+    opcode[verb] = 2
 
-        # multiply
-        elif opcode[i] == 2:
-            print("multiply: [{}] x [{}] = [{}]".format(opcode[i+1], opcode[i+2], opcode[i+3]))
-            opcode[opcode[i+3]] = opcode[opcode[i+1]] * opcode[opcode[i+2]]
-            print(">> {} x {}".format(opcode[opcode[i+1]], opcode[opcode[i+2]]))
+    for n in range(100):
+        for v in range(100):
+            opcode = reset.copy()
+            # change input
+            opcode[noun] = n
+            opcode[verb] = v
 
-        # halt
-        elif opcode[i] == 99:    
-            print("halt")
-            break
+            i = 0
+            while 1:
+                # addition
+                if opcode[i] == 1:
+                    opcode[opcode[i+3]] = opcode[opcode[i+1]] + opcode[opcode[i+2]]
+                    i = i+4
 
-    print("opcode: \n{}".format(opcode))
+                # multiply
+                elif opcode[i] == 2:
+                    opcode[opcode[i+3]] = opcode[opcode[i+1]] * opcode[opcode[i+2]]
+                    i = i+4
+
+                # halt
+                elif opcode[i] == 99:
+                    break
+
+                else:
+                    print("shit broke")
+                    return
+
+            if opcode[0] == 19690720:
+                print("noun: {}, verb: {}".format(n, v))
+                print("100 * n + v = {}".format(100*n+v))
+                return
+
 
 if __name__== "__main__":
     main()
